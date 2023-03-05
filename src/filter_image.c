@@ -9,6 +9,17 @@
 void l1_normalize(image im)
 {
     // TODO
+    // Assert 1 channel image
+    assert(im.c == 1);
+
+    float cumsum = 0;
+    int size = im.h*im.w;
+
+    for (int i=0; i<size; i++)
+    {
+        cumsum += im.data[i];
+    }
+    scale_image(im, 0, 1/cumsum);
 }
 
 image make_box_filter(int w)
