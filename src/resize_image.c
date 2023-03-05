@@ -1,5 +1,6 @@
 #include <math.h>
 #include "image.h"
+#include <stdio.h>
 
 float nn_interpolate(image im, float x, float y, int c)
 {
@@ -15,8 +16,8 @@ image nn_resize(image im, int w, int h)
 
     // Get resizing coeficients
     float Sx, Sy = 0;
-    Sx = w/im.w;
-    Sy = h/im.h;
+    Sx = w/(float)im.w;
+    Sy = h/(float)im.h;
 
     float Xorig, Yorig = 0;
     float pixel = 0;
@@ -30,7 +31,6 @@ image nn_resize(image im, int w, int h)
             for (int x=0; x!=w; x++)
             {
                 Xorig = (x/Sx)+(0.5/Sx)-0.5;
-
                 pixel = nn_interpolate(im, Xorig, Yorig, c);
                 set_pixel(imageResized, x, y, c, pixel);
             }
