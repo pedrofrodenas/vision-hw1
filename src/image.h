@@ -16,8 +16,12 @@ image rgb_to_grayscale(image im);
 image grayscale_to_rgb(image im, float r, float g, float b);
 void rgb_to_hsv(image im);
 void hsv_to_rgb(image im);
+
+// Adds v to channel c in image im
 void shift_image(image im, int c, float v);
+// Multiplies v by im in channel c
 void scale_image(image im, int c, float v);
+// Ensures all values in im are grater that 0 and lower than 1
 void clamp_image(image im);
 image get_channel(image im, int c);
 int same_image(image a, image b);

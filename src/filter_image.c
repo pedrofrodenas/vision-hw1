@@ -12,7 +12,7 @@ void l1_normalize(image im)
     // Assert 1 channel image
     assert(im.c == 1);
 
-    float cumsum = 0;
+    float cumsum = 0.0;
     int size = im.h*im.w;
 
     for (int i=0; i<size; i++)
@@ -25,7 +25,12 @@ void l1_normalize(image im)
 image make_box_filter(int w)
 {
     // TODO
-    return make_image(1,1,1);
+    image im = make_image(w,w,1);
+    // Adds one to each image possition
+    shift_image(im, 0, 1.0);
+    // Normalize values
+    l1_normalize(im);
+    return im;
 }
 
 image convolve_image(image im, image filter, int preserve)
