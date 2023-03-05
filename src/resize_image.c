@@ -79,8 +79,8 @@ image bilinear_resize(image im, int w, int h)
     
 	// Get resizing coeficients
 	float Sx, Sy = 0;
-	Sx = w/im.w;
-	Sy = h/im.h;
+	Sx = w/(float)im.w;
+	Sy = h/(float)im.h;
     float Xorig, Yorig = 0;
     for (int c=0; c!=im.c; c++)
     {
