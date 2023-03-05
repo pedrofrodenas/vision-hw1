@@ -47,10 +47,6 @@ float bilinear_interpolate(image im, float x, float y, int c)
     int y1 = floor(y);
     int y2 = ceil(y);
 
-    // Our padding
-    // x1 = (x1 < 0) ? 0:x1;
-    // y1 = (y1 < 0) ? 0:y1;
-
     // Get sorrounding pixels
     float v1 = get_pixel(im, x1, y1, c);
     float v2 = get_pixel(im, x2, y1, c);

@@ -23,7 +23,6 @@ int same_image(image a, image b){
         if(!within_eps(a.data[i], b.data[i])) 
         {
             printf("The value should be %f, but it is %f! \n", b.data[i], a.data[i]);
-            printf("In position: %d \n", i);
             return 0;
         }
     }
