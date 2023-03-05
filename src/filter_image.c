@@ -36,7 +36,40 @@ image make_box_filter(int w)
 image convolve_image(image im, image filter, int preserve)
 {
     // TODO
-    return make_image(1,1,1);
+
+    // Make resulting image
+    image imgRes = make_image(im.w, im.h, im.c);
+    // Padding amount
+    int Padx = floor(filter.w/2.);
+    int Pady = floor(filter.h/2.);
+
+    // Pixels to get from image and filter
+    float imPix, filPix = 0.;
+
+    if (preserve == 1)
+    {
+        for (int y=0; y!=im.h; y++)
+        {
+            for (int x=0; x!=im.w; x++)
+            {   
+                for (int ch=0; ch!=im.c; ch++)
+                {
+                    float dstPix = 0.;
+                    for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
+                    {
+                        for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
+                        {
+                            imPix = get_pixel(im, Fx, Fy, ch);
+                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
+                            dstPix += (imPix*filPix);
+                        }
+                    }
+                    set_pixel(imgRes, x, y, ch, dstPix);
+                }
+            }
+        }
+    }
+    return imgRes;
 }
 
 image make_highpass_filter()
