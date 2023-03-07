@@ -46,26 +46,30 @@ image convolve_image(image im, image filter, int preserve)
     // Pixels to get from image and filter
     float imPix, filPix = 0.;
 
-    if (preserve == 1)
+    for (int y=0; y!=im.h; y++)
     {
-        for (int y=0; y!=im.h; y++)
-        {
-            for (int x=0; x!=im.w; x++)
-            {   
-                for (int ch=0; ch!=im.c; ch++)
+        for (int x=0; x!=im.w; x++)
+        {   
+            for (int ch=0; ch!=im.c; ch++)
+            {
+                float dstPix = 0.;
+                for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
                 {
-                    float dstPix = 0.;
-                    for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
+                    for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
                     {
-                        for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
+                        imPix = get_pixel(im, Fx, Fy, ch);
+                        if (preserve == 1)
                         {
-                            imPix = get_pixel(im, Fx, Fy, ch);
                             filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
-                            dstPix += (imPix*filPix);
+                        } 
+                        else
+                        {
+                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, ch);
                         }
+                        dstPix += (imPix*filPix);
                     }
-                    set_pixel(imgRes, x, y, ch, dstPix);
                 }
+                set_pixel(imgRes, x, y, ch, dstPix);
             }
         }
     }
