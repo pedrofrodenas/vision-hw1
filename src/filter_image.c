@@ -36,6 +36,7 @@ image make_box_filter(int w)
 image convolve_image(image im, image filter, int preserve)
 {
     // TODO
+    assert(im.c == filter.c || filter.c == 1);
 
     // Make resulting image
     image imgRes = make_image(im.w, im.h, im.c);
@@ -78,20 +79,62 @@ image convolve_image(image im, image filter, int preserve)
 
 image make_highpass_filter()
 {
+    image highPassFilter = make_image(3,3,1);
+    // First row values
+    set_pixel(highPassFilter, 0, 0, 0, 0);
+    set_pixel(highPassFilter, 1, 0, 0, -1);
+    set_pixel(highPassFilter, 2, 0, 0, 0);
+    // Second row values
+    set_pixel(highPassFilter, 0, 1, 0, -1);
+    set_pixel(highPassFilter, 1, 1, 0, 4);
+    set_pixel(highPassFilter, 2, 1, 0, -1);
+    // Third row values
+    set_pixel(highPassFilter, 0, 2, 0, 0);
+    set_pixel(highPassFilter, 1, 2, 0, -1);
+    set_pixel(highPassFilter, 2, 2, 0, 0);
+    
     // TODO
-    return make_image(1,1,1);
+    return highPassFilter;
 }
 
 image make_sharpen_filter()
 {
     // TODO
-    return make_image(1,1,1);
+    image sharpenFilter = make_image(3,3,1);
+    // First row values
+    set_pixel(sharpenFilter, 0, 0, 0, 0);
+    set_pixel(sharpenFilter, 1, 0, 0, -1);
+    set_pixel(sharpenFilter, 2, 0, 0, 0);
+    // Second row values
+    set_pixel(sharpenFilter, 0, 1, 0, -1);
+    set_pixel(sharpenFilter, 1, 1, 0, 5);
+    set_pixel(sharpenFilter, 2, 1, 0, -1);
+    // Third row values
+    set_pixel(sharpenFilter, 0, 2, 0, 0);
+    set_pixel(sharpenFilter, 1, 2, 0, -1);
+    set_pixel(sharpenFilter, 2, 2, 0, 0);
+    
+    return sharpenFilter;
 }
 
 image make_emboss_filter()
 {
     // TODO
-    return make_image(1,1,1);
+    image embossFilter = make_image(3,3,1);
+    // First row values
+    set_pixel(embossFilter, 0, 0, 0, -2);
+    set_pixel(embossFilter, 1, 0, 0, -1);
+    set_pixel(embossFilter, 2, 0, 0, 0);
+    // Second row values
+    set_pixel(embossFilter, 0, 1, 0, -1);
+    set_pixel(embossFilter, 1, 1, 0, 1);
+    set_pixel(embossFilter, 2, 1, 0, 1);
+    // Third row values
+    set_pixel(embossFilter, 0, 2, 0, 0);
+    set_pixel(embossFilter, 1, 2, 0, 1);
+    set_pixel(embossFilter, 2, 2, 0, 2);
+
+    return embossFilter;
 }
 
 // Question 2.2.1: Which of these filters should we use preserve when we run our convolution and which ones should we not? Why?
@@ -99,6 +142,7 @@ image make_emboss_filter()
 
 // Question 2.2.2: Do we have to do any post-processing for the above filters? Which ones and why?
 // Answer: TODO
+// Yes, all of then need normalization between [0,1] if we want to show the output as image
 
 image make_gaussian_filter(float sigma)
 {
