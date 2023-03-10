@@ -45,32 +45,52 @@ image convolve_image(image im, image filter, int preserve)
     int Pady = floor(filter.h/2.);
 
     // Pixels to get from image and filter
-    float imPix, filPix = 0.;
+    float filPix, imPix = 0.;
 
     for (int y=0; y!=im.h; y++)
     {
         for (int x=0; x!=im.w; x++)
         {   
-            for (int ch=0; ch!=im.c; ch++)
+            if (preserve == 1)
+            {
+                for (int ch=0; ch!=im.c; ch++)
+                {
+                    float dstPix = 0.;
+                    for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
+                    {
+                        for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
+                        {
+                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
+                            imPix = get_pixel(im, Fx, Fy, ch);
+                            dstPix += (imPix*filPix);
+                        }
+                    }
+                    set_pixel(imgRes, x, y, ch, dstPix);
+                }
+            }
+            else
             {
                 float dstPix = 0.;
                 for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
                 {
                     for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
                     {
-                        imPix = get_pixel(im, Fx, Fy, ch);
-                        if (preserve == 1)
+                        for (int ch=0; ch!=im.c; ch++)
                         {
-                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
-                        } 
-                        else
-                        {
-                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, ch);
+                            imPix = get_pixel(im, Fx, Fy, ch);
+                            if (im.c == filter.c)
+                            {
+                                filPix = get_pixel(filter, Fx+Padx, Fy+Pady, ch);
+                            }
+                            else
+                            {
+                                filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
+                            }  
+                            dstPix += (imPix*filPix);   
                         }
-                        dstPix += (imPix*filPix);
                     }
                 }
-                set_pixel(imgRes, x, y, ch, dstPix);
+                set_pixel(imgRes, x, y, 0, dstPix);
             }
         }
     }
