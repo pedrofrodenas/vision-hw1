@@ -56,12 +56,12 @@ image convolve_image(image im, image filter, int preserve)
                 for (int ch=0; ch!=im.c; ch++)
                 {
                     float dstPix = 0.;
-                    for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
+                    for (int Fy = 0; Fy!=filter.h; Fy++)
                     {
-                        for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
+                        for (int Fx=0; Fx!=filter.w; Fx++)
                         {
-                            filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
-                            imPix = get_pixel(im, Fx, Fy, ch);
+                            filPix = get_pixel(filter, Fx, Fy, 0);
+                            imPix = get_pixel(im, x+Fx-Padx, y+Fy-Pady, ch);
                             dstPix += (imPix*filPix);
                         }
                     }
@@ -71,20 +71,20 @@ image convolve_image(image im, image filter, int preserve)
             else
             {
                 float dstPix = 0.;
-                for (int Fy = y-Pady; Fy!=filter.h-Pady+y; Fy++)
+                for (int Fy = 0; Fy!=filter.h; Fy++)
                 {
-                    for (int Fx=x-Padx; Fx!=filter.w-Padx+x; Fx++)
+                    for (int Fx=0; Fx!=filter.w; Fx++)
                     {
                         for (int ch=0; ch!=im.c; ch++)
                         {
-                            imPix = get_pixel(im, Fx, Fy, ch);
+                            imPix = get_pixel(im, Fx+x-Padx, Fy+y-Pady, ch);
                             if (im.c == filter.c)
                             {
-                                filPix = get_pixel(filter, Fx+Padx, Fy+Pady, ch);
+                                filPix = get_pixel(filter, Fx, Fy, ch);
                             }
                             else
                             {
-                                filPix = get_pixel(filter, Fx+Padx, Fy+Pady, 0);
+                                filPix = get_pixel(filter, Fx, Fy, 0);
                             }  
                             dstPix += (imPix*filPix);   
                         }
@@ -101,19 +101,14 @@ image make_highpass_filter()
 {
     image highPassFilter = make_image(3,3,1);
     // First row values
-    set_pixel(highPassFilter, 0, 0, 0, 0);
     set_pixel(highPassFilter, 1, 0, 0, -1);
-    set_pixel(highPassFilter, 2, 0, 0, 0);
     // Second row values
     set_pixel(highPassFilter, 0, 1, 0, -1);
     set_pixel(highPassFilter, 1, 1, 0, 4);
     set_pixel(highPassFilter, 2, 1, 0, -1);
     // Third row values
-    set_pixel(highPassFilter, 0, 2, 0, 0);
     set_pixel(highPassFilter, 1, 2, 0, -1);
-    set_pixel(highPassFilter, 2, 2, 0, 0);
     
-    // TODO
     return highPassFilter;
 }
 
@@ -122,17 +117,13 @@ image make_sharpen_filter()
     // TODO
     image sharpenFilter = make_image(3,3,1);
     // First row values
-    set_pixel(sharpenFilter, 0, 0, 0, 0);
     set_pixel(sharpenFilter, 1, 0, 0, -1);
-    set_pixel(sharpenFilter, 2, 0, 0, 0);
     // Second row values
     set_pixel(sharpenFilter, 0, 1, 0, -1);
     set_pixel(sharpenFilter, 1, 1, 0, 5);
     set_pixel(sharpenFilter, 2, 1, 0, -1);
     // Third row values
-    set_pixel(sharpenFilter, 0, 2, 0, 0);
     set_pixel(sharpenFilter, 1, 2, 0, -1);
-    set_pixel(sharpenFilter, 2, 2, 0, 0);
     
     return sharpenFilter;
 }
