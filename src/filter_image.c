@@ -39,7 +39,10 @@ image convolve_image(image im, image filter, int preserve)
     assert(im.c == filter.c || filter.c == 1);
 
     // Make resulting image
-    image imgRes = make_image(im.w, im.h, im.c);
+    int outChannels = (preserve) ? im.c : 1;
+
+    image imgRes = make_image(im.w, im.h, outChannels);
+    
     // Padding amount
     int Padx = floor(filter.w/2.);
     int Pady = floor(filter.h/2.);
@@ -77,19 +80,21 @@ image convolve_image(image im, image filter, int preserve)
                     {
                         for (int ch=0; ch!=im.c; ch++)
                         {
-                            imPix = get_pixel(im, Fx+x-Padx, Fy+y-Pady, ch);
+                            imPix = get_pixel(im, x+Fx-Padx, y+Fy-Pady, ch);
                             if (im.c == filter.c)
                             {
                                 filPix = get_pixel(filter, Fx, Fy, ch);
                             }
                             else
                             {
+                                // Parece que el error esta aqui
                                 filPix = get_pixel(filter, Fx, Fy, 0);
                             }  
                             dstPix += (imPix*filPix);   
                         }
                     }
                 }
+                // Creo que el problema está aquí
                 set_pixel(imgRes, x, y, 0, dstPix);
             }
         }
