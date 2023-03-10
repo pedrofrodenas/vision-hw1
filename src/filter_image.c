@@ -87,14 +87,12 @@ image convolve_image(image im, image filter, int preserve)
                             }
                             else
                             {
-                                // Parece que el error esta aqui
                                 filPix = get_pixel(filter, Fx, Fy, 0);
                             }  
                             dstPix += (imPix*filPix);   
                         }
                     }
                 }
-                // Creo que el problema está aquí
                 set_pixel(imgRes, x, y, 0, dstPix);
             }
         }
