@@ -161,7 +161,29 @@ image make_emboss_filter()
 image make_gaussian_filter(float sigma)
 {
     // TODO
-    return make_image(1,1,1);
+    // sigma * 6
+    int gaussianSize = (int)ceil(sigma*6);
+    // odd sigma* 6
+    gaussianSize = (fmod(gaussianSize,2) == 0) ? gaussianSize+1: gaussianSize;
+
+    image gaussian = make_image(gaussianSize,gaussianSize,1);
+
+    // Base and exponenet for sigma calculation
+    float base, exponent = 0.F;
+
+    // Shifting x and y to center filter grid on 0
+    int shiftingXY = floor(gaussianSize/2);
+
+    for (int y=0; y!=gaussian.h; y++)
+    {
+        for (int x=0; x!=gaussian.w; x++)
+        {
+            base = 1 / (TWOPI*powf(sigma, 2));
+            exponent = expf(-1*(pow(x-shiftingXY,2)+pow(y-shiftingXY,2))/(2*powf(sigma,2)));
+            set_pixel(gaussian, x, y, 0, base*exponent);
+        }
+    }
+    return gaussian;
 }
 
 image add_image(image a, image b)
