@@ -138,13 +138,11 @@ image make_emboss_filter()
     // First row values
     set_pixel(embossFilter, 0, 0, 0, -2);
     set_pixel(embossFilter, 1, 0, 0, -1);
-    set_pixel(embossFilter, 2, 0, 0, 0);
     // Second row values
     set_pixel(embossFilter, 0, 1, 0, -1);
     set_pixel(embossFilter, 1, 1, 0, 1);
     set_pixel(embossFilter, 2, 1, 0, 1);
     // Third row values
-    set_pixel(embossFilter, 0, 2, 0, 0);
     set_pixel(embossFilter, 1, 2, 0, 1);
     set_pixel(embossFilter, 2, 2, 0, 2);
 
@@ -189,13 +187,45 @@ image make_gaussian_filter(float sigma)
 image add_image(image a, image b)
 {
     // TODO
-    return make_image(1,1,1);
+    assert(a.h == b.h);
+    assert(a.w == b.w);
+    assert(a.c == b.c);
+
+    image result = make_image(b.w, b.h, b.c);
+
+    for (int c=0; c!=a.c; c++)
+    {
+        for (int y=0; y!=a.h; y++)
+        {
+            for (int x=0; x!=a.w; x++)
+            {
+                set_pixel(result, x, y, c, get_pixel(a, x, y, c)+get_pixel(b, x, y, c));
+            }
+        }
+    }
+    return result;
 }
 
 image sub_image(image a, image b)
 {
     // TODO
-    return make_image(1,1,1);
+    assert(a.h == b.h);
+    assert(a.w == b.w);
+    assert(a.c == b.c);
+
+    image result = make_image(b.w, b.h, b.c);
+
+    for (int c=0; c!=a.c; c++)
+    {
+        for (int y=0; y!=a.h; y++)
+        {
+            for (int x=0; x!=a.w; x++)
+            {
+                set_pixel(result, x, y, c, get_pixel(a, x, y, c)-get_pixel(b, x, y, c));
+            }
+        }
+    }
+    return result;
 }
 
 image make_gx_filter()
