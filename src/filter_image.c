@@ -231,24 +231,110 @@ image sub_image(image a, image b)
 image make_gx_filter()
 {
     // TODO
-    return make_image(1,1,1);
+    image sobelXFilter = make_image(3,3,1);
+    // First row values
+    set_pixel(sobelXFilter, 0, 0, 0, -1);
+    set_pixel(sobelXFilter, 2, 0, 0, 1);
+    // Second row values
+    set_pixel(sobelXFilter, 0, 1, 0, -2);
+    set_pixel(sobelXFilter, 2, 1, 0, 2);
+    // Third row values
+    set_pixel(sobelXFilter, 0, 2, 0, -1);
+    set_pixel(sobelXFilter, 2, 2, 0, 1);
+
+    return sobelXFilter;
 }
 
 image make_gy_filter()
 {
     // TODO
-    return make_image(1,1,1);
+    image sobelYFilter = make_image(3,3,1);
+    // First row values
+    set_pixel(sobelYFilter, 0, 0, 0, -1);
+    set_pixel(sobelYFilter, 1, 0, 0, -2);
+    set_pixel(sobelYFilter, 2, 0, 0, -1);
+    // Second row values
+    // Third row values
+    set_pixel(sobelYFilter, 0, 2, 0, 1);
+    set_pixel(sobelYFilter, 1, 2, 0, 2);
+    set_pixel(sobelYFilter, 2, 2, 0, 1);
+
+    return sobelYFilter;
 }
 
 void feature_normalize(image im)
 {
     // TODO
+    float min, max, aux;
+
+    min = INFINITY;
+    max = -1;
+
+    for (int c=0; c!=im.c; c++)
+    {
+        for (int y=0; y!=im.h; y++)
+        {
+            for (int x=0; x!=im.w; x++)
+            {
+                aux = get_pixel(im, x, y, c);
+                if (aux < min)
+                {
+                    min = aux;
+                }
+                if (aux > max)
+                {
+                    max = aux;
+                }
+            }
+        }
+    }
+
+    for (int c=0; c!=im.c; c++)
+    {
+        for (int y=0; y!=im.h; y++)
+        {
+            for (int x=0; x!=im.w; x++)
+            {
+                if ((max-min)==0)
+                {
+                    set_pixel(im, x, y, c, 0);
+                }
+                else
+                {   float pixel = get_pixel(im, x, y, c);
+                    set_pixel(im, x, y, c, (pixel-min)/(max-min));
+                }
+            }
+        }
+    }
 }
+
 
 image *sobel_image(image im)
 {
     // TODO
-    return calloc(2, sizeof(image));
+    image *imgarray = calloc(2, sizeof(image));
+
+    image sobelxF = make_gx_filter();
+    image sobelyF = make_gy_filter();
+
+    image sobelXout = convolve_image(im, sobelxF, 0);
+    image sobelYout = convolve_image(im, sobelyF, 0);
+
+    imgarray[0] = make_image(sobelXout.w, sobelXout.h, sobelXout.c);
+    imgarray[1] = make_image(sobelXout.w, sobelXout.h, sobelXout.c);
+
+    float Gx, Gy;
+    for (int y = 0; y!= sobelXout.h; y++)
+    {
+        for (int x=0; x!=sobelXout.w; x++)
+        {
+                Gx = get_pixel(sobelXout, x, y, 0);
+                Gy = get_pixel(sobelYout, x, y, 0);
+                set_pixel(imgarray[0], x, y, 0, sqrt(pow(Gx, 2)+pow(Gy, 2)));
+                set_pixel(imgarray[1], x, y, 0,  atan2f(Gy, Gx));
+        }
+    }
+    return imgarray;
 }
 
 image colorize_sobel(image im)
