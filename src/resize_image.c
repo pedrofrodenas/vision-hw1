@@ -27,10 +27,10 @@ image nn_resize(image im, int w, int h)
         {
         // Original coordinate system position calculation
         //   Reescale + Grid Shifting  
-        Yorig = (y/Sy)+(0.5/Sy)-0.5;
+        Yorig = (y/Sy)+(0.5f/Sy)-0.5f;
             for (int x=0; x!=w; x++)
             {
-                Xorig = (x/Sx)+(0.5/Sx)-0.5;
+                Xorig = (x/Sx)+(0.5f/Sx)-0.5f;
                 pixel = nn_interpolate(im, Xorig, Yorig, c);
                 set_pixel(imageResized, x, y, c, pixel);
             }
